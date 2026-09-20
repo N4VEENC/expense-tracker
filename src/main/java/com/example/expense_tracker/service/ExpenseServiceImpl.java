@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.example.expense_tracker.entity.Expense;
+import com.example.expense_tracker.exception.ResourceNotFoundException;
 import com.example.expense_tracker.repository.ExpenseRepository;
 
 @Service
@@ -29,14 +30,22 @@ public class ExpenseServiceImpl implements ExpenseService {
     @Override
     public Expense getExpenseById(Long id) {
         return expenseRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Expense not found with id: " + id));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Expense not found with id: " + id
+                        )
+                );
     }
 
     @Override
     public Expense updateExpense(Long id, Expense expense) {
 
         Expense existingExpense = expenseRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Expense not found with id: " + id));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Expense not found with id: " + id
+                        )
+                );
 
         existingExpense.setDescription(expense.getDescription());
         existingExpense.setAmount(expense.getAmount());
@@ -52,7 +61,11 @@ public class ExpenseServiceImpl implements ExpenseService {
     public void deleteExpense(Long id) {
 
         Expense existingExpense = expenseRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Expense not found with id: " + id));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Expense not found with id: " + id
+                        )
+                );
 
         expenseRepository.delete(existingExpense);
     }
